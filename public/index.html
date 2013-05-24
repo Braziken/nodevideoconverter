@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<html lang="en" ng-app="Builder">
+	<!-- start Mixpanel -->
+	<script type="text/javascript">
+		if (location.href.match("app.eadbuilder.com.br")) {
+			console.log("Production Environment. The real mixpanel is up!");
+			(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src=("https:"===e.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f);b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==	typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);mixpanel.init("546bb49e136c9f21d45e089205bff9dc");
+		} else {
+			console.log("Mocking Mixpanel! Test Environment");
+			window.mixpanel = {
+                track : function (ev, opt) {
+                   console.log("MixPanel event: %s", ev);
+                },
+                identify : function (uniqId) {
+                    console.log("MixPanel Identify %s", uniqId);
+                },
+                people : {
+                	set : function () {}
+                }
+        	}
+		}
+	</script>
+	<!-- end Mixpanel -->
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+		<!-- START CSS -->
+        <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+        <link rel="icon" href="favicon.png" type="image/png" />
+        <link rel="stylesheet" href="css/bootstrap.css" />
+        <link rel="stylesheet" href="js/lib/colorPicker/colorPicker.css" />
+        <link rel="stylesheet" href="css/jquery.fileupload-ui.css" />
+        <link rel="stylesheet" href="css/reset.css" />
+        <link rel="stylesheet" href="js/lib/contextMenu/jquery.contextMenu.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
+        <link href="css/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="css/dsbuilder_ui.css" />
+        <!-- END CSS -->
+
+        <!-- EAD BUILDER External -->
+        <!-- jQuery -->
+            <script src="js/jquery/jquery-1.7.2.min.js"></script>
+            <script src="js/jquery/jquery-ui-1.8.20.custom.min.js" type="text/javascript"></script>
+        <!-- Scrollbar -->
+            <script src="js/jquery.easing.1.3.min.js" type="text/javascript"></script>
+            <script src="js/mCustomScrollbar/jquery.mousewheel.min.js" type="text/javascript"></script>
+            <script src="js/mCustomScrollbar/jquery.mCustomScrollbar.min.js" type="text/javascript"></script>
+        <!-- FabricJS -->
+            <script src="js/lib/fabricjs/all.min.js"></script>
+        <!-- Context menu -->
+            <script src="js/lib/contextMenu/jquery.contextMenu.min.js" type="text/javascript" charset="utf-8"></script>
+        <!-- Underscore -->
+            <script src="js/lib/underscore/underscore-min.js" type="text/javascript" charset="UTF-8"></script>
+        <!-- JED Translation -->
+            <script src="js/lib/jed/jed.min.js" type="text/javascript" charset="utf-8"></script>
+        <!-- Bootstrap extras -->
+            <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
+            <script type="text/javascript" src="js/bootstrap/bootstrap-tooltip.js"></script>
+            <script type="text/javascript" src="js/bootstrap/bootstrap-popover.js"></script>
+        <!-- AngularJS -->
+            <script src="js/lib/angular/angular.min.js" type="text/javascript" charset="utf-8"></script>
+            <script src="js/lib/angular-ui/build/angular-ui.min.js" type="text/javascript" charset="utf-8"></script>
+        <!-- END EAD BUILDER External -->
+        
+        <!-- AudioJS -->
+        <script src="js/lib/audiojs/audio.min.js" type="text/javascript" charset="UTF-8"></script>
+        <!-- Color Picker -->
+        <script src="js/lib/colorPicker/jquery.colorPicker.min.js" type="text/javascript"></script>
+
+        <!-- SCRIPTS EADBUILDER Internal -->
+        <script src="js/eadbuilder/fabricjs/fabric.extends.js"></script>
+        <script src="js/eadbuilder/eadbuilder.contextmenu.js" type="text/javascript"></script>
+        <script src="js/eadbuilder/eadbuilder.keyPress.js" type="text/javascript"></script>
+        <script src="js/eadbuilder/browserdetect.js" type="text/javascript"></script>
+        <script src="js/eadbuilder/layout.js" type="text/javascript"></script>
+        <script src="js/eadbuilder/export.js" type="text/javascript"></script>
+        <script src="js/eadbuilder/index.js" type="text/javascript"></script>
+        <script src="js/eadbuilder/angular/app.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/eadbuilder/angular/services.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/eadbuilder/angular/directives.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/eadbuilder/angular/controller.js" type="text/javascript" charset="utf-8"></script>
+        <!-- END SCRIPTS EADBUILDER Internal -->
+
+		<!-- LOWER THAN EQUAL IE7 -->
+		<!--[if lte IE 7]>
+		<link rel="stylesheet" href="css/ie7.css" />
+		<![endif]-->
+
+		<style type="text/css" media="screen">
+			.item, .placeholder {
+				padding: 2px;
+				width: 50px;
+				height: 20px;
+				border: 1px solid #333;
+				background: #EEE;
+			}
+
+			.placeholder {	
+				background: #AEF;
+			}
+		</style>
+
+		
+
+		<title>DS Builder</title>
+	</head>
+
+	<body onselectstart="return false">
+		<div id="loading">
+			<label>{{getText('Carregando...')}}</label>
+		</div>
+		<div ng-view></div>
+		<!--Audio itens-->
+		<audio preload="auto"></audio>
+
+	</body>
+
+	<!-- Scripts de serviços do EADBuilder -->
+	<script language='javascript' async='true' type='text/javascript' src='http://cdn.walkme.com/users/5577/walkme_5577.js'></script>
+
+	<script type="text/javascript" charset="utf-8">
+
+        // @formater:off
+        $(document).ready(function()
+        {           
+            /*$('#add-slide .dropup').hover(function() {
+                $(this).find('.dropdown-menu').first().stop(true, true).delay(250).slideDown();
+            }, function() {
+                $(this).find('.dropdown-menu').first().stop(true, true).delay(100).slideUp()
+            });*/
+
+            setTimeout(function()
+            {
+                var uvOptions = {};
+                (function()
+                {
+                    var uv = document.createElement('script');
+                    uv.type = 'text/javascript';
+                    uv.async = true;
+                    uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/mU2tjlowsRSvorcfmMHBwQ.js';
+                    var s = document.getElementsByTagName('script')[0];
+                    s.parentNode.insertBefore(uv, s);
+
+                    //
+
+                })();
+            }, 5000);
+        });
+
+        /** Fechar modal com video
+         *
+         * id = id do div que contem o iframe com o video
+         */
+        function closeVideoModal(id)
+        {
+            $(id).html($(id).html())
+        }
+
+        /** Animacoes da barra de ferramentas de texto
+         *
+         */
+        function openTextTools()
+        {
+            $("#textTools").animate({
+                left : 0
+            }, 500);
+        }
+
+        function closeTextTools()
+        {
+            $("#textTools").animate({
+                left : -270,
+            }, 200);
+        }
+
+        $(function()
+        {
+            $("#openTextTools").toggle(openTextTools, closeTextTools);
+        });
+
+        /**
+         *	Tocador de áudio AudioJs
+         **/
+
+
+        var createPlayer = {
+        	init : function (){
+        		window.as = [];
+	        	window.audio = {};
+	        	audiojs.events.ready(function()
+	        	{
+	        	    as = audiojs.createAll({
+	        	        trackEnded : function(e)
+	        	        {
+	        	            $(".icon-pause").addClass('hide');
+	        	            $(".icon-play").removeClass('hide');
+	        	        }
+	        	    });
+	        	    audio = as[0];
+	        	});
+        	},
+        	
+			play : function (el){
+				var _this = el;
+        	    var audio_file = $(_this).find(".audio");
+        	    var icon_play = audio_file.parent().find(".icon-play");
+        	    var icon_pause = audio_file.parent().find(".icon-pause");
+        	    var audio_source;
+
+        	    console.log(audio);
+
+        	    if (audio_file.attr('ng-src')) {
+        	    	audio_source = audio_file.attr('ng-src');
+        	    } else {
+        	    	audio_source = audio_file.attr('src');
+        	    }
+
+        	    if (audio.playing) {
+        	        audio.pause();
+        	        $(".icon-pause").addClass('hide');
+        	        $(".icon-play").removeClass('hide');
+
+        	        if (audio.mp3 != audio_source) {
+        	            audio.load(audio_source);
+
+        	            audio.play();
+        	            icon_play.addClass('hide');
+        	            icon_pause.removeClass('hide');
+        	        }
+        	    } else {
+    	    		audio.load(audio_source);
+
+        	        audio.play();
+        	        icon_play.addClass('hide');
+        	        icon_pause.removeClass('hide');
+        	    }
+        	},
+
+        	stopAll : function(){
+    			audio.pause();
+    			audio.playing = false;
+    			$(".icon-pause").addClass('hide');
+    	        $(".icon-play").removeClass('hide');
+        	}
+        }
+        createPlayer.init();
+	</script>
+
+	<script type="text/javascript">
+		// For global translation (will be overwritten by rootScope's getText)
+		var getText = function(str) {
+			return str;
+		}
+	</script>
+
+    
+
+	<!--[if IE]>
+	<script type="text/javascript">
+	$('#modalNotIE').modal();
+	</script>
+	<![endif]-->
+
+</html>
