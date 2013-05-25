@@ -28,17 +28,17 @@
 	<!-- VIDEO -->
 	<!-- 1. jquery library -->
 	<script type="text/javascript"
-	   src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js">
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js">
 	</script>
-	 
+
 	<!-- 2. flowplayer -->
 	<script type="text/javascript"
-	   src="//releases.flowplayer.org/5.4.1/flowplayer.min.js">
+	src="//releases.flowplayer.org/5.4.1/flowplayer.min.js">
 	</script>
-	 
+
 	<!-- 3. skin -->
 	<link rel="stylesheet" type="text/css"
-	   href="//releases.flowplayer.org/5.4.1/skin/minimalist.css">
+	href="//releases.flowplayer.org/5.4.1/skin/minimalist.css">
 
 
 	<title>Node Video Converter</title>
@@ -102,92 +102,64 @@
 			<div class="row">
 				<div class="span10 offset1">
 
-					<form id="fileupload" class="well form-search" action="//jquery-file-upload.appspot.com/" method="POST" enctype="multipart/form-data">
-						<!-- Redirect browsers with JavaScript disabled to the origin page -->
-						<noscript>&lt;input type="hidden" name="redirect" value="http://blueimp.github.com/jQuery-File-Upload/"&gt;</noscript>
-						<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-						<div class="row fileupload-buttonbar">
-							<div class="span7">
-								<!-- The fileinput-button span is used to style the file input field as button -->
-								<span class="btn btn-success fileinput-button">
-									<i class="icon-plus icon-white"></i>
-									<span>Add files...</span>
-									<input type="file" name="files[]" multiple="">
-								</span>
-								<button type="submit" class="btn btn-primary start">
-									<i class="icon-upload icon-white"></i>
-									<span>Start upload</span>
-								</button>
-								<button type="reset" class="btn btn-warning cancel">
-									<i class="icon-ban-circle icon-white"></i>
-									<span>Cancel upload</span>
-								</button>
-								<button type="button" class="btn btn-danger delete">
-									<i class="icon-trash icon-white"></i>
-									<span>Delete</span>
-								</button>
-								<input type="checkbox" class="toggle">
-								<!-- The loading indicator is shown during file processing -->
-								<span class="fileupload-loading"></span>
-							</div>
-							<!-- The global progress information -->
-							<div class="span5 fileupload-progress fade">
-								<!-- The global progress bar -->
-								<div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-									<div class="bar" style="width:0%;"></div>
-								</div>
-								<!-- The extended global progress information -->
-								<div class="progress-extended">&nbsp;</div>
-							</div>
-						</div>
-						<!-- The table listing the files available for upload/download -->
-						<table role="presentation" class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
+					<form id="fileupload" class="well form-search" action="http://nodevideoconverter.amazonaws.com/" method="post" enctype="multipart/form-data" >
+
+						<span class="btn btn-success fileinput-button">
+							<i class="icon-plus icon-white"></i>
+							<span>Add file...</span>
+							<input type="file" name="file" id="file">
+						</span>
+						
+						<input type="hidden" name="policy">
+
+						<button id="btn_submit" type="submit" class="btn btn-primary start">
+							<i class="icon-upload icon-white"></i>
+							<span>Start upload</span>
+						</button>
+						
 						<span class="alert alert-error">Upload server currently unavailable - Fri May 24 2013 22:34:29 GMT-0300 (BRT)</span>
 					</form>
-
-					
-
 					
 				</div>
 				<div class="span6 offset1">
 					<form class="well form-search">
 						<div class="flowplayer">
-						   <video>
-						      <source type="video/mp4" src="http://stream.flowplayer.org/white/470x250.webm">
-						   </video>
-						</div>
-					</form>
+							<video>
+								<source type="video/mp4" src="http://stream.flowplayer.org/white/470x250.webm">
+								</video>
+							</div>
+						</form>
+					</div>
+
+					<div class="span4">
+						<form class="form-horizontal well">
+
+							<table class="table table-bordered table-striped table-hover">
+								<thead>
+									<tr>
+										<th>Vídeos assistidos</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr>
+										<td>Mark</td>
+									</tr>
+									<tr>
+										<td>Thornton</td>
+									</tr>
+									<tr>
+										<td>Larry</td>
+									</tr>
+								</tbody>
+
+							</table>
+						</form>
+					</div>
+
 				</div>
 
-				<div class="span4">
-					<form class="form-horizontal well">
-
-						<table class="table table-bordered table-striped table-hover">
-							<thead>
-								<tr>
-									<th>Vídeos assistidos</th>
-								</tr>
-							</thead>
-
-							<tbody>
-								<tr>
-									<td>Mark</td>
-								</tr>
-								<tr>
-									<td>Thornton</td>
-								</tr>
-								<tr>
-									<td>Larry</td>
-								</tr>
-							</tbody>
-							
-						</table>
-					</form>
-				</div>
-
-			</div>
-
-		</section>
+			</section>
 
 		 <!-- Footer
 		 ================================================== -->
@@ -199,8 +171,8 @@
 		 	Based on <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>. Hosted on <a href="http://pages.github.com/">GitHub</a>. Icons from <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>. Web fonts from <a href="http://www.google.com/webfonts">Google</a>.
 		 </footer>
 
-	</div><!-- /container -->
-</body>
+		</div><!-- /container -->
+	</body>
 
 	<!-- START JS -->
 
@@ -220,4 +192,30 @@
 	<script src="lib/jqueryupload/jquery.fileupload.js"></script>
 
 	<!-- END JS -->
-</html>
+
+	<script type="text/javascript">
+		var _requestBucket;
+		$( "#btn_submit" ).bind( "click", function(event) {
+			event.preventDefault();
+			var _file;
+
+			_file = $("#file").val().replace(/.+[\\\/]/, "");
+
+			$.ajax({
+				url: "/gets3credentials/" + _file,
+				dataType: "JSONP",
+				success: function(res){
+					$("#fld_redirect").val(res.S3Redirect);
+			        $("#fld_AWSAccessKeyId").val(res.s3Key);
+			        $("#fld_Policy").val(res.s3PolicyBase64);
+			        $("#fld_Signature").val(res.s3Signature);
+					$("#myform").submit(); 
+				},
+				error: function(res, status, error) {
+					//do some error handling here
+				}
+			});
+		});
+
+	</script>
+	</html>
