@@ -102,7 +102,7 @@
 			<div class="row">
 				<div class="span10 offset1">
 
-					<form id="fileupload" class="well form-search" action="http://nodevideoconverter.amazonaws.com/" method="post" enctype="multipart/form-data" >
+					<form id="fileupload" class="well form-search" action="file/upload" method="post" enctype="multipart/form-data" >
 
 						<span class="btn btn-success fileinput-button">
 							<i class="icon-plus icon-white"></i>
@@ -117,16 +117,31 @@
 							<span>Start upload</span>
 						</button>
 						
-						<span class="alert alert-error">Upload server currently unavailable - Fri May 24 2013 22:34:29 GMT-0300 (BRT)</span>
 					</form>
+
 					
+					
+				</div>
+
+				<div class="span10 offset1">
+					<div class="span5">
+						<div class="progress">
+							<div class="bar " style="width: 60%;"></div>
+						</div>
+					</div>
+					<div class="span4">
+						<span class="alert alert-error">Upload server currently unavailable</span>
+					</div>
+
 				</div>
 				<div class="span6 offset1">
 					<form class="well form-search">
-						<div class="flowplayer">
+						<div id="videoplayer" class="flowplayer">
 							<video>
 								<source type="video/mp4" src="http://stream.flowplayer.org/white/470x250.webm">
-								</video>
+							</video>
+
+
 							</div>
 						</form>
 					</div>
@@ -166,9 +181,9 @@
 		 <hr>
 
 		 <footer id="footer">
-		 	<p class="pull-right"><a href="#top">Back to top</a></p>
-		 	Made by <a href="https://github.com/wemersonblend">Wemerson Silva</a>. Contact him <a href="mailto:wemersonblend@gmail.com">wemersonblend@gmail.com</a>.<br/>
-		 	Based on <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>. Hosted on <a href="http://pages.github.com/">GitHub</a>. Icons from <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>. Web fonts from <a href="http://www.google.com/webfonts">Google</a>.
+			<p class="pull-right"><a href="#top">Back to top</a></p>
+			Made by <a href="https://github.com/wemersonblend">Wemerson Silva</a>. Contact him <a href="mailto:wemersonblend@gmail.com">wemersonblend@gmail.com</a>.<br/>
+			Based on <a href="http://twitter.github.com/bootstrap/">Bootstrap</a>. Hosted on <a href="http://pages.github.com/">GitHub</a>. Icons from <a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>. Web fonts from <a href="http://www.google.com/webfonts">Google</a>.
 		 </footer>
 
 		</div><!-- /container -->
@@ -188,34 +203,68 @@
 
 	<!-- jquery upload -->
 	<script src="lib/jqueryupload/jquery.ui.widget.js"></script>
-	<script src="lib/jqueryupload/jquery.iframe-transport.js"></script>
-	<script src="lib/jqueryupload/jquery.fileupload.js"></script>
 
 	<!-- END JS -->
 
 	<script type="text/javascript">
-		var _requestBucket;
-		$( "#btn_submit" ).bind( "click", function(event) {
-			event.preventDefault();
-			var _file;
 
-			_file = $("#file").val().replace(/.+[\\\/]/, "");
+		$( "#btn_submit" ).bind( "click", function(e) {
+			e.preventDefault();
+			var formData = new FormData($('#fileupload')[0]);
 
 			$.ajax({
-				url: "/gets3credentials/" + _file,
-				dataType: "JSONP",
-				success: function(res){
-					$("#fld_redirect").val(res.S3Redirect);
-			        $("#fld_AWSAccessKeyId").val(res.s3Key);
-			        $("#fld_Policy").val(res.s3PolicyBase64);
-			        $("#fld_Signature").val(res.s3Signature);
-					$("#myform").submit(); 
+				url: 'file/upload',
+				type: 'POST', xhr: function() { 
+					var ajaxXhr = $.ajaxSettings.xhr();
+					if(ajaxXhr.upload){
+						ajaxXhr.upload.addEventListener('progress',progressFn, false); 
+						//handling the progress of the upload
+					}
+					return ajaxXhr;
 				},
-				error: function(res, status, error) {
-					//do some error handling here
-				}
+					
+				success: successFn,
+				error: errorFn,
+				
+				data: formData,
+
+				cache: false,
+				contentType: false,
+				processData: false
 			});
+
+			function initUpload(){
+				$('.progress').addClass();
+				$('.progress .bar').attr('style', 'width : 0');
+			}
+
+			function progressFn(e){
+				if(e.lengthComputable){
+					$('.progress').removeClass('hide');
+					var progress = (e.loaded/e.total) *100;
+					console.log(Math.round(progress));
+					$('.progress .bar').attr('style', 'width : ' + (Math.round(progress) +'%'));
+					console.log({value:e.loaded,max:e.total});
+				}
+			}
+
+			function successFn(data){
+				console.log('download realizado com sucesso', data)
+				var videoSorces = '';
+
+				for(var i=0; i<data.outputs.length; i++){
+					videoSorces =  '<source src="'+data.outputs[i].url+'" type="video/'+data.outputs[i].label+'" />' ;
+				}
+
+
+				$('video').html(videoSorces);
+
+			}
+
+			function errorFn(data){
+				console.log(data);
+			}
 		});
 
 	</script>
-	</html>
+</html>
