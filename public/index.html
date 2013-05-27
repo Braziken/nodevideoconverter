@@ -12,47 +12,31 @@
 	<meta name="author" content="Wemerson Silva">
 
 	<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
-	<link rel="icon" href="favicon.png" type="image/png" />
-	<!-- http://cdnjs.com/ -->
+	<link rel="icon" href="favicon.gif" type="image/png" />
 
 	<!-- START CSS -->
-	<link href="http://bootswatch.com/cosmo/bootstrap.min.css" rel="stylesheet">
-	<link href="http://bootswatch.com/default/bootstrap-responsive.min.css" rel="stylesheet">
-	<link href="http://bootswatch.com/css/font-awesome.min.css" rel="stylesheet">
-	<link href="http://bootswatch.com/css/bootswatch.css" rel="stylesheet">
+	<link href="lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+	<link href="lib/bootstrap/bootstrap-responsive.min.css" rel="stylesheet">
+	<link href="lib/bootstrap/theme/font-awesome.min.css" rel="stylesheet">
+	<link href="lib/bootstrap/theme/bootswatch.css" rel="stylesheet">
+	<link href="lib/bootstrap/font/myriad.css" rel="stylesheet">
 
 
-	<link href="http://blueimp.github.io/jQuery-File-Upload/css/jquery.fileupload-ui.css" rel="stylesheet">
+	<link href="lib/blueimp/jquery.fileupload-ui.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
 	<!-- END CSS -->
 
 	<!-- VIDEO -->
 	<!-- 1. jquery library -->
-	<script type="text/javascript"
-	src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js">
-	</script>
-
+	<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
 	<!-- 2. flowplayer -->
-	<script type="text/javascript"
-	src="//releases.flowplayer.org/5.4.1/flowplayer.min.js">
-	</script>
-
+	<script type="text/javascript" src="lib/flowplayer/flowplayer.min.js"></script>
 	<!-- 3. skin -->
-	<link rel="stylesheet" type="text/css"
-	href="//releases.flowplayer.org/5.4.1/skin/minimalist.css">
+	<link rel="stylesheet" type="text/css" href="lib/flowplayer/minimalist.css">
 
 
 	<title>Node Video Converter</title>
 
-	<style type="text/css">
-	section {
-		margin: 0;
-		padding: 0;
-	}
-
-	.subhead > div:first-child {
-		min-height: 150px;
-	}
-	</style>
 </head>
 
 <body class="preview" id="top" data-spy="scroll" data-target=".subnav" data-offset="80">
@@ -107,17 +91,18 @@
 						<span class="btn btn-success fileinput-button">
 							<i class="icon-plus icon-white"></i>
 							<span>Add file...</span>
-							<input type="file" name="file" id="file">
+							<input type="file" name="file" id="file" onchange="$('#policy').val($(this).val())">
 						</span>
 						
-						<input type="hidden" name="policy">
+						<input id="policy" type="text" name="policy" readonly ondblclick="$('#file').click()">
 
 						<button id="btn_submit" type="submit" class="btn btn-primary start">
 							<i class="icon-upload icon-white"></i>
 							<span>Start upload</span>
 						</button>
-						<div class="control-group success" style="padding:0; margin:0; width:200px;">
-								<span class="help-inline">Woohoo!</span>
+
+						<div class="message control-group success" style="display:inline; padding:0; margin:0; ">
+								<span class="help-inline">woooho!</span>
 						</div>
 					</form>
 
@@ -125,21 +110,20 @@
 						<div class="bar " style="width: 60%;"></div>
 					</div>
 					
+					<div class="preload span10">	
+						<div class="icon"></div>
+						<span>Generating Video Files ...</span>
+					</siv>
+					
 					
 				</div>
 
 
-				<div class="span6 offset1">
+				<div id="videocontainer" class=" span6 offset1">
 					<form class="well form-search">
-						<div id="videoplayer" class="flowplayer">
-							<video>
-								<source type="video/mp4" src="http://stream.flowplayer.org/white/470x250.webm">
-								</video>
-
-
-							</div>
-						</form>
-					</div>
+						<div id="videoplayer"></div>
+					</form>
+				</div>
 
 					<!-- div class="span4">
 						<form class="form-horizontal well">
@@ -186,80 +170,10 @@
 
 	<!-- START JS -->
 
-	<!-- jquery -->
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-
 	<!-- Bootstrap -->
-	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
-
-	<!-- AngularJS -->
-	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.1.4/angular.min.js"></script>
-	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui.min.js"></script>
-
-	<!-- jquery upload -->
-	<script src="lib/jqueryupload/jquery.ui.widget.js"></script>
+	<script type="text/javascript" src="lib/bootstrap/bootstrap.min.js"></script>
 
 	<!-- END JS -->
 
-	<script type="text/javascript">
-
-	$( "#btn_submit" ).bind( "click", function(e) {
-		e.preventDefault();
-		var formData = new FormData($('#fileupload')[0]);
-
-		$.ajax({
-			url: 'file/upload',
-			type: 'POST', xhr: function() { 
-				var ajaxXhr = $.ajaxSettings.xhr();
-				if(ajaxXhr.upload){
-					ajaxXhr.upload.addEventListener('progress',progressFn, false); 
-						//handling the progress of the upload
-					}
-					return ajaxXhr;
-				},
-
-				success: successFn,
-				error: errorFn,
-				
-				data: formData,
-
-				cache: false,
-				contentType: false,
-				processData: false
-			});
-
-		function initUpload(){
-			$('.progress').addClass();
-			$('.progress .bar').attr('style', 'width : 0');
-		}
-
-		function progressFn(e){
-			if(e.lengthComputable){
-				$('.progress').removeClass('hide');
-				var progress = (e.loaded/e.total) *100;
-				console.log(Math.round(progress));
-				$('.progress .bar').attr('style', 'width : ' + (Math.round(progress) +'%'));
-				console.log({value:e.loaded,max:e.total});
-			}
-		}
-
-		function successFn(data){
-			console.log('download realizado com sucesso', data)
-			var videoSorces = '';
-
-			for(var i=0; i<data.outputs.length; i++){
-				videoSorces =  '<source src="'+data.outputs[i].url+'" type="video/'+data.outputs[i].label+'" />' ;
-			}
-
-
-			$('video').html(videoSorces);
-
-		}
-
-		function errorFn(data){
-			console.log(data);
-		}
-	});
-
-</script>
+	<script type="text/javascript" src="js/script.js"> </script>
 </html>

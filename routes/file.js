@@ -48,17 +48,20 @@ exports.convert = function(fileName, inFilePath, videoName, callback){
 			{
 				"label": "mp4",
 				"url": "s3://nodevideoconverter/converted/"+fileName+".mp4",
-				"filename" : fileName
+				"filename" : fileName,
+				"public": true
 			},
 			{
 				"label": "webm",
 			  	"url": "s3://nodevideoconverter/converted/"+fileName+".webm",
-			  	"filename" : fileName
+			  	"filename" : fileName,
+			  	"public": true
 			},
 			{
 				"label": "ogg",
 			  	"url": "s3://nodevideoconverter/converted/"+fileName+".ogg",
-			  	"filename" : fileName
+			  	"filename" : fileName,
+			  	"public": true
 			}
 		]
 	}, function(err, data){
