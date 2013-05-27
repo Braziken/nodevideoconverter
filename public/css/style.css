@@ -1,20 +1,11 @@
-body, * {
-	font-family:"myriad pro";
-}
+body, * { font-family:"myriad pro"; }
 
-section {
-	margin: 0;
-	padding: 0;
-}
+section { margin: 0;padding: 0; }
 
-.subhead > div:first-child {
-	min-height: 150px;
-}
+.message {display:inline; padding:0; margin:0; }
 
-.preload {
-	text-align: center;
-}
-.preload .icon {
-	height: 31px;
-	background:transparent url('../img/371.gif') no-repeat center center ;
-}
+.preload { text-align: center; }
+
+.preload .icon { height: 31px; background:transparent url('../img/371.gif') no-repeat center center ; }
+
+.subhead > div:first-child { min-height: 150px; }

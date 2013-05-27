@@ -66,7 +66,9 @@ exports.convert = function(fileName, inFilePath, videoName, callback){
 		]
 	}, function(err, data){
 		if (err) { 
-			console.log("OH NO! There was an error"); return err; 
+			console.log("OH NO! There was an error ", err); 
+			callback(err);
+			return err;
 		}
 		console.log('Job created!\nJob ID: ' + data.id);
 		console.log(data);

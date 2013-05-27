@@ -14,7 +14,7 @@ $(document).ready(function(){
 			playlist: [videoFiles]
 		});
 	}
-	init();
+
 
 	$( "#btn_submit" ).bind( "click", function(e) {
 		e.preventDefault();
@@ -22,7 +22,9 @@ $(document).ready(function(){
 		if($('#file').val() == '' ){
 			return;
 		}
+
 		startUpload();
+
 		var formData = new FormData($('#fileupload')[0]);
 
 		$.ajax({
@@ -50,6 +52,7 @@ $(document).ready(function(){
 		function startUpload (){
 			$('.progress').show('fast');
 			$('.progress .bar').attr('style', 'width : 0');
+			$('.preload').hide('fast');
 			$('#videocontainer').hide('fast');
 			$('.message span').text('');
 		}
@@ -70,11 +73,18 @@ $(document).ready(function(){
 		}
 
 		function successFn(data){
-			console.log('Conversion performed successfully', data)
+			
+			if(data.errors){
+				console.log('Upload errors: ', data);
+				showMessage('Upload errors: ' + data.errors[0], 'error');
+
+				$('.preload').hide('slow');
+				
+				return data.errors[0];
+			}
 			var videoSources = [];
 			var videoObj = {};
 			for(var i=0; i<data.outputs.length; i++){
-				//videoSources +=  '<source src="'+data.outputs[i].url+'" type="video/'+data.outputs[i].label+'" />' ;
 				videoObj[data.outputs[i].label] = data.outputs[i].url;
 				videoSources.push(videoObj);
 			}
@@ -83,27 +93,28 @@ $(document).ready(function(){
 			$('#videocontainer').show('slow');
 			$('.preload').hide('slow');
 
-				/*$('#videoplayer').html('<video controls="true"></video>')
-				$('#videoplayer video').html(videoSources);
-				$('#videoplayer video').load();*/
-				console.log(videoObj)
-				loadPlayer([videoObj]);
-				showMessage('Conversion performed successfully', 'success');
+			loadPlayer([videoObj]);
+			
+			console.log('Conversion performed successfully', data)
+			showMessage('Conversion performed successfully', 'success');
 
 
-			}
+		}
 
-			function errorFn(data){
-				console.log(data);
-				showMessage('Internal Error Server: '+data, 'error');
-			}
+		function errorFn(data){
+			console.log(data);
+			showMessage('Internal Error Server: '+data, 'error');
+		}
 
-			function showMessage(msg, type){
-				$('.message').removeClass('error');
-				$('.message').removeClass('success');
+		function showMessage(msg, type){
+			$('.message').removeClass('error');
+			$('.message').removeClass('success');
 
-				$('.message').addClass(type);
-				$('.message span').text(msg);
-			}
-		});
+			$('.message').show();
+			$('.message').addClass(type);
+			$('.message span').text(msg);
+		}
+	});
+
+	init();
 })
