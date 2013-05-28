@@ -1,39 +1,37 @@
 var s3 = require('s3');
 var zencoder = require('zencoder');
-	
+//console.log(s3)	
 
 var s3Client = s3.createClient({
 	key: "AKIAJLG4KCLXEPDOQKSA",
 	secret: "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",
 	bucket: "nodevideoconverter"
 });
-
+//console.log(s3Client)
 var zClient = new zencoder('42ee9e2c3e9bd574df5bd48483405eb0');
 
 
 
 exports.upload = function(req, res) {
 	var videoFile = req.files.file;
-	console.log(req.files)
-	
 	var uploader = s3Client.upload(videoFile.path, "tmp/"+videoFile.name);
 
 	uploader.on('error', function(err) {
-		console.error("unable to upload:", err.stack);
+		console.error("unable to upload: ", err.stack);
+		res.json({"error" : "unable to upload : " + err.stack});
 	});
 
 	uploader.on('progress', function(amountDone, amountTotal) {
 		console.log("progress", amountDone, amountTotal);
+		//res.json({"msg" :"progress" + amountDone + amountTotal});	
 	});
-
+	
 	uploader.on('end', function() {
-		
 		exports.convert(videoFile.name, "tmp/"+videoFile.name, videoFile.name, function(data){
 			console.log("done");
 			res.json(data);
 		});
 	});
-
 
 	//res.json(videoFile);
 }
@@ -52,12 +50,12 @@ exports.convert = function(fileName, inFilePath, videoName, callback){
 				"filename" : fileName,
 				"public": true,
 				"thumbnails": [{
-						"label": "first",
-						"number": 1
-					},{
-						"interval_in_frames": 5000,
-						"label": "second"
-					}
+					"label": "first",
+					"number": 1
+				},{
+					"interval_in_frames": 5000,
+					"label": "second"
+				}
 				]
 			},
 			{
@@ -66,12 +64,12 @@ exports.convert = function(fileName, inFilePath, videoName, callback){
 				"filename" : fileName,
 				"public": true,
 				"thumbnails": [{
-						"label": "first",
-						"number": 1
-					},{
-						"interval_in_frames": 5000,
-						"label": "second"
-					}
+					"label": "first",
+					"number": 1
+				},{
+					"interval_in_frames": 5000,
+					"label": "second"
+				}
 				]
 			},
 			{
@@ -80,12 +78,12 @@ exports.convert = function(fileName, inFilePath, videoName, callback){
 				"filename" : fileName,
 				"public": true,
 				"thumbnails": [{
-						"label": "first",
-						"number": 1
-					},{
-						"interval_in_frames": 5000,
-						"label": "second"
-					}
+					"label": "first",
+					"number": 1
+				},{
+					"interval_in_frames": 5000,
+					"label": "second"
+				}
 				]
 			}
 		]
@@ -114,7 +112,7 @@ exports.list = function(req, res){
 var list = {
 	fs :  require('fs'),
 	filepath : './models/videolist.json',
-		
+
 	add : function(listItem, callback){
 
 		this.get(function (data){
@@ -122,8 +120,8 @@ var list = {
 
 			list.fs.writeFile(list.filepath, JSON.stringify(data), function(err) {
 				if(err) {
-				  console.log(err);
-				  return;
+					console.log(err);
+					return;
 				}
 				console.log("List saved to ");
 
@@ -144,3 +142,5 @@ var list = {
 		});
 	}
 }	
+
+
