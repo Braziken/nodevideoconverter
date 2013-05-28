@@ -118,7 +118,7 @@ var list = {
 	add : function(listItem, callback){
 
 		this.get(function (data){
-			data.push(listItem);
+			data.unshift(listItem);
 
 			list.fs.writeFile(list.filepath, JSON.stringify(data), function(err) {
 				if(err) {
