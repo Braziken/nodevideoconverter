@@ -29,3 +29,12 @@ var port = process.env.PORT || 3000;
 app.listen(port, function() {
 	console.log("Listening on " + port);
 });
+
+/*
+	http.createServer(function (request, response) {
+	    console.log('starting #' + i++);
+	    var stream = fs.createReadStream('file.dat', { bufferSize: 64 * 1024 });
+	    stream.pipe(response);
+	}).listen(8000);
+*/
+

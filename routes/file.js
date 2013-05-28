@@ -14,6 +14,7 @@ var zClient = new zencoder('42ee9e2c3e9bd574df5bd48483405eb0');
 
 exports.upload = function(req, res) {
 	var videoFile = req.files.file;
+	console.log(req.files)
 	
 	var uploader = s3Client.upload(videoFile.path, "tmp/"+videoFile.name);
 
