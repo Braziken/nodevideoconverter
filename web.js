@@ -4,10 +4,11 @@
  */
 
 
- var express = require('express');
- var fs = require('fs');
+var express = require('express');
+var fs = require('fs');
+var dirname = require('path').dirname();
 
- var app = module.exports = express.createServer();
+var app = module.exports = express.createServer();
 
 // carrega as rotas
 var index = require('./routes/index').index,
@@ -19,7 +20,7 @@ app.configure(function()
 {
 	app.use(express.bodyParser());
 	app.use(app.router);
-	app.use(express.static(__dirname + '/public'));
+	app.use(express.static(dirname + '/public'));
 });
 
 app.configure('development', function()
@@ -39,12 +40,10 @@ app.configure('production', function()
 
 function showIndex(req, res)
 {
-
-	res.send('Harkuna matata');
-	/*fs.readFile(__dirname + '/public/index.html', 'utf8', function(err, text)
+	fs.readFile(dirname + '/public/index.html', 'utf8', function(err, text)
 	{
 		res.send(text);
-	});*/
+	});
 };
 
 app.get('/', showIndex);
@@ -56,3 +55,18 @@ app.post('/file/upload', file.upload);
 {
 	console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
+
+/*
+var express = require("express");
+var app = module.exports = express.createServer();
+app.use(express.logger());
+
+app.get('/', function(request, response) {
+	response.send('Hello World!');
+});
+
+var port = process.env.PORT || 5000;
+app.listen(port, function() {
+	console.log("Listening on " + port);
+});
+*/
