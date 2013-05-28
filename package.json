@@ -1,7 +1,10 @@
 {
-  "name": "application-name",
+  "name": "nodevideoconverter",
   "version": "0.0.1",
-  "private": true,
+  "engines": {
+     "node": "0.10.x",
+     "npm":  "1.2.x"
+   },
   "dependencies": {
     "express": "2.5.8",
     "underscore": ">=1.4.2",
