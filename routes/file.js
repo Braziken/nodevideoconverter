@@ -49,19 +49,43 @@ exports.convert = function(fileName, inFilePath, videoName, callback){
 				"label": "mp4",
 				"url": "s3://nodevideoconverter/converted/"+fileName+".mp4",
 				"filename" : fileName,
-				"public": true
+				"public": true,
+				"thumbnails": [{
+						"label": "first",
+						"number": 1
+					},{
+						"interval_in_frames": 5000,
+						"label": "second"
+					}
+				]
 			},
 			{
 				"label": "webm",
-			  	"url": "s3://nodevideoconverter/converted/"+fileName+".webm",
-			  	"filename" : fileName,
-			  	"public": true
+				"url": "s3://nodevideoconverter/converted/"+fileName+".webm",
+				"filename" : fileName,
+				"public": true,
+				"thumbnails": [{
+						"label": "first",
+						"number": 1
+					},{
+						"interval_in_frames": 5000,
+						"label": "second"
+					}
+				]
 			},
 			{
 				"label": "ogg",
-			  	"url": "s3://nodevideoconverter/converted/"+fileName+".ogg",
-			  	"filename" : fileName,
-			  	"public": true
+				"url": "s3://nodevideoconverter/converted/"+fileName+".ogg",
+				"filename" : fileName,
+				"public": true,
+				"thumbnails": [{
+						"label": "first",
+						"number": 1
+					},{
+						"interval_in_frames": 5000,
+						"label": "second"
+					}
+				]
 			}
 		]
 	}, function(err, data){
@@ -72,6 +96,50 @@ exports.convert = function(fileName, inFilePath, videoName, callback){
 		}
 		console.log('Job created!\nJob ID: ' + data.id);
 		console.log(data);
+		list.add(data.outputs);
 		callback(data);
 	});
 }
+
+
+// LISTING SAVED VIDEOS
+exports.list = function(req, res){
+	
+	list.get(function(data){
+		res.json(data);
+	});
+}
+
+var list = {
+	fs :  require('fs'),
+	filepath : './models/videolist.json',
+		
+	add : function(listItem, callback){
+
+		this.get(function (data){
+			data.push(listItem);
+
+			list.fs.writeFile(list.filepath, JSON.stringify(data), function(err) {
+				if(err) {
+				  console.log(err);
+				  return;
+				}
+				console.log("List saved to ");
+
+				if(typeof(callback) =='string'){
+					callback();	
+				}			    
+			}); 
+		});
+	},
+
+	get : function(callback){
+		this.fs.readFile(this.filepath, 'utf8', function(err, data){
+			if (err) {
+				return console.log(err);
+			}
+			console.log(JSON.parse(data));
+			callback(JSON.parse(data));
+		});
+	}
+}	

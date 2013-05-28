@@ -9,7 +9,6 @@
 
 // carrega as rotas
 var index = require('./routes/index').index,
-	s3 = require('./routes/s3');
 	file = require('./routes/file');
 
 
@@ -46,6 +45,7 @@ function showIndex(req, res)
 app.get('/', showIndex);
 app.get('/index.html', showIndex);
 app.post('/file/upload', file.upload);
+app.get('/file/list', file.list);
 
 //app.get('/course/last', course.last);
 	app.listen(5000, function()
