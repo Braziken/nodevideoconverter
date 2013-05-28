@@ -10,10 +10,18 @@ $(document).ready(function(){
 	}
 
 	var loadPlayer = function (videoFiles){
+		console.log(JSON.stringify(videoFiles));
+		$('#videocontainer').show('fast');
+
+		$('.videoOgg').attr('href', videoFiles[0].ogg);
+		$('.videoWebm').attr('href', videoFiles[0].webm);
+		$('.videoMp4').attr('href', videoFiles[0].mp4);
+
 		$("#videoplayer").flowplayer({
 			playlist: [videoFiles]
 		});
 	}
+	window.loadPlayer = loadPlayer;
 
 
 	$( "#btn_submit" ).bind( "click", function(e) {

@@ -1,8 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en">
-<script type="text/javascript">
-
-</script>
+<html lang="en" ng-app>
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -33,13 +30,15 @@
 	<script type="text/javascript" src="lib/flowplayer/flowplayer.min.js"></script>
 	<!-- 3. skin -->
 	<link rel="stylesheet" type="text/css" href="lib/flowplayer/minimalist.css">
+	<script type="text/javascript" src="lib/angular/angular.min.js"></script>
+	<script type="text/javascript" src="js/controller.js"></script>
 
 
 	<title>Node Video Converter</title>
 
 </head>
 
-<body class="preview" id="top" data-spy="scroll" data-target=".subnav" data-offset="80">
+<body class="preview" id="top" data-spy="scroll" data-target=".subnav" data-offset="80" ng-controller="ListCtrl">
 
 		<!-- Navbar
 		================================================== -->
@@ -115,7 +114,6 @@
 						<span>Generating Video Files ...</span>
 					</siv>
 					
-					
 				</div>
 
 
@@ -126,43 +124,40 @@
 						<ul class="breadcrumb">
 							<span> Download do arquivo</a>
 							<div>
-								<a class="btn btn-primary" href="#"><i class="icon-download icon-white"></i> Ogg</a>
-								<a class="btn btn-primary" href="#"><i class="icon-download icon-white"></i> Mp4</a>
-								<a class="btn btn-primary" href="#"><i class="icon-download icon-white"></i> Webm</a>
+								<a class="videoOgg btn btn-primary" href="#" target="_blank"><i class="icon-download icon-white"></i> Ogg</a>
+								<a class="videoMp4 btn btn-primary" href="#" target="_blank"><i class="icon-download icon-white"></i> Mp4</a>
+								<a class="videoWebm btn btn-primary" href="#" target="_blank"><i class="icon-download icon-white"></i> Webm</a>
 							</div>
 						</ul>
 					</form>
 				</div>
+
 				
-					<div class="span4">
-						<form class="form-horizontal well">
+				<div class="span4">
+					
+					<form class="list form-horizontal well hide">
 
-							<table class="table table-bordered table-striped table-hover">
-								<thead>
-									<tr>
-										<th>Vídeos assistidos</th>
-									</tr>
-								</thead>
+						<table class="table table-bordered table-striped table-hover">
+							<thead>
+								<tr>
+									<th>Videos Played</th>
+								</tr>
+							</thead>
 
-								<tbody>
-									<tr>
-										<td>Mark</td>
-									</tr>
-									<tr>
-										<td>Thornton</td>
-									</tr>
-									<tr>
-										<td>Larry</td>
-									</tr>
-								</tbody>
+							<tbody>
+								<tr ng-repeat="video in list">
+									<td><a href="#" onclick="loadPlayer({{[video.sources]}})">{{video[0].id}}</a></td>
+								</tr>
+							</tbody>
 
-							</table>
-						</form>
-					</div>
-
+						</table>
+					</form>
 				</div>
+				<div class=" span5"> <a href="javascript:$('.list').show('slow');">Show video list? </a><span class="badge badge-warning">Beta Version</span></div>
 
-			</section>
+			</div>
+
+		</section>
 
 		 <!-- Footer
 		 ================================================== -->
