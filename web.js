@@ -1,54 +1,40 @@
-/**
- * Module dependencies
- */
-
- var express = require('express');
- var fs = require('fs');
-
- var app = module.exports = express.createServer();
-
-// carrega as rotas
-var index = require('./routes/index').index,
+var express = require('express'),
+	app = express.createServer(),
 	file = require('./routes/file');
 
-
-app.configure(function()
-{
-	app.use(express.bodyParser());
-	app.use(app.router);
+// Configuration
+app.configure(function(){
 	app.use(express.static(__dirname + '/public'));
-});
+	app.use(express.bodyParser());
+	app.use(express.methodOverride());
 
-app.configure('development', function()
-{
+	//Error Handling
+	app.use(express.logger());
 	app.use(express.errorHandler({
-		dumpExceptions : true,
-		showStack : true
+		dumpExceptions: true, 
+		showStack: true
 	}));
+
+	//Setup the Route, you are almost done
+	app.use(app.router);
 });
 
-app.configure('production', function()
-{
-	app.use(express.errorHandler());
+app.get('/', function(req, res){
+	res.redirect("/index.html");
 });
-
-// Routes
-
-function showIndex(req, res)
-{
-	fs.readFile(__dirname + '/public/index.html', 'utf8', function(err, text)
-	{
-		res.send(text);
-	});
-};
-
-app.get('/', showIndex);
-app.get('/index.html', showIndex);
 app.post('/file/upload', file.upload);
 app.get('/file/list', file.list);
 
-//app.get('/course/last', course.last);
-	app.listen(5000, function()
-{
-	console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+//Heroku
+var port = process.env.PORT || 3000;
+app.listen(port, function() {
+	console.log("Listening on " + port);
 });
+
+/*
+	http.createServer(function (request, response) {
+	    console.log('starting #' + i++);
+	    var stream = fs.createReadStream('file.dat', { bufferSize: 64 * 1024 });
+	    stream.pipe(response);
+	}).listen(8000);
+*/
