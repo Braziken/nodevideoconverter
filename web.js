@@ -5,8 +5,10 @@ var express = require('express'),
 // Configuration
 app.configure(function(){
 	app.use(express.static(__dirname + '/public'));
+	//app.use(express.limit('100000'));
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
+
 
 	//Error Handling
 	app.use(express.logger());

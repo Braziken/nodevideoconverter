@@ -1,4 +1,3 @@
-// MOCK Modules
 var path = require('path');
 
 
@@ -6,14 +5,15 @@ var request = require('../../lib/express/request-mock.js').request;
 var response = require('../../lib/express/response-mock.js').response;
 var routes_dir = path.resolve('./routes');
 
+// Define application on test mode
+process.env.NODE_TEST = true;
 
+// Load Modulo to Mock requires
 loadModule = function(filePath, mocks) {
 	var vm   = require('vm');
 	var fs   = require('fs');
 	mocks = mocks || {};
 
-	// this is necessary to allow relative path modules within loaded file
-	// i.e. requiring ./some inside file /a/b.js needs to be resolved to /a/some
 	var resolveModule = function(module) {
 		if (module.charAt(0) !== '.') return module;
 		return path.resolve(path.dirname(filePath), module);
@@ -37,12 +37,10 @@ loadModule = function(filePath, mocks) {
 	return context;
 };
 
-var file = {};
-
-
+var file = {}, s3Mock, zencoderMock, requires = [];
 
 describe("Route Upload", function() {
-	var s3Mock, zencoderMock, requires = [];
+	
 
 	beforeEach(function () {
 		s3Mock = {
@@ -51,7 +49,6 @@ describe("Route Upload", function() {
 					upload : function(path, name){
 						return {
 							on : function(type, callback){
-								console.log(type);
 								if(type == 'error'){
 									//callback({'stack' : '200'});
 									return;
@@ -71,7 +68,38 @@ describe("Route Upload", function() {
 			},
 		};
 
+		zencoderMock = function(key){
+			return {
+				Job : {
+					create : function (obj, callback){
+						var err = '';
+
+						if(!obj.hasOwnProperty('input') || !obj.hasOwnProperty('outputs') || !typeof(obj['outputs']) == 'array'){
+							err == 'Error: incorrect object input';
+						}else{
+							obj = { test: true,
+							outputs: 
+							    [ { label: 'mp4',
+							        url: 'http://nodevideoconverter.s3.amazonaws.com/converted/test.mov.mp4',
+							        id: 99930714 },
+							      { label: 'webm',
+							        url: 'http://nodevideoconverter.s3.amazonaws.com/converted/test.mov.webm',
+							        id: 99930715 },
+							      { label: 'ogg',
+							        url: 'http://nodevideoconverter.s3.amazonaws.com/converted/test.mov.ogg',
+							        id: 99930716 } ],
+							   id: 47692110 
+							};
+						}
+						callback(err, obj);
+					}
+				}	
+			}
+			
+		}
+
 		requires["s3"] = s3Mock;
+		requires["zencoder"] = zencoderMock;
 		file = loadModule(routes_dir+'/file.js', requires).exports;
 	});
 
@@ -82,84 +110,68 @@ describe("Route Upload", function() {
 		expect(typeof(file.upload)).toBe("function");
 	});
 
-	it('ensures that the spy was called', function() {
+	it('ensures that the spy was called to the function file.upload', function() {
 		spyOn(file, 'upload');
+
 		file.upload(request, response);
 		expect(file.upload.calls.length).toEqual(1);
 	});
 
-	it('02', function(){
+	it('should receive an json with output files, converted by service of Zencoder and saved in Amazon S3 service', function(){
+		
 		request.files = {
 			file : {
 				size: 109739897,
 				path: '/tmp/ccc3589b00275efa450dfdb9f11d1f32',
-				name: 'sample.zip',
-				type: 'application/zip'
+				name: 'test.wmv',
+				type: 'video/wmv'
 			}
 		}
 		file.upload(request, response);
-		console.log('response.instanceVars.json');
-		console.log(response.instanceVars.json);
-		
-		expect(file).toBeTruthy();
 
+		// Execution
+		waitsFor(function() {
+			return ( typeof response.instanceVars.json != 'undefined');
+		}, "Video Upload", 1000);
+		
+		//Expectation
+		runs(function() {
+			expect(typeof(response.instanceVars.json.outputs)).toBe("object");
+			expect(typeof(response.instanceVars.json.outputs[0])).toBe("object");
+			expect(response.instanceVars.json.id).toMatch("47692110");
+		});
 	});
-
-	/*
-	it('should return error if video type is wrong', function() {
-		request.files = {
-			file : {
-				size: 109739897,
-				path: '/tmp/ccc3589b00275efa450dfdb9f11d1f32',
-				name: 'sample.zip',
-				type: 'application/zip'
-			}
-		}
-		file.upload(request, response);
-		
-		//expect(response.instanceVars.json).toEqual({error: 'Usuário não está autenticado no servidor.'});
-	});
-
-	it('should return error if video type is wrong', function() {
-		request.files = {
-			file : {
-				size: 109739897,
-				path: '/tmp/ccc3589b00275efa450dfdb9f11d1f32',
-				name: 'sample.zip',
-				type: 'application/zip'
-			}
-		}
-		file.upload(request, response);
-		
-		//expect(response.instanceVars.json).toEqual({error: 'Usuário não está autenticado no servidor.'});
-	});*/
 });
 
+describe("Route List", function() {
+	it('exports.list should be a function', function() {
 
+		expect(file).toBeTruthy();
+		expect(file.list).toBeDefined();
+		expect(typeof(file.list)).toBe("function");
+	});
 
-// Auxiliar functions
-var  fileCheck = function(file){
-	var fileSufix = getSufix(file);
-	var validFormat = false;
-	var fileTypes = [
-	"3g2", "3gp", "3gp2", "3gpp", "3gpp2", "aac", 
-	"ac3", "eac3", "ec3", "f4a", "f4b", "f4v", 
-	"flv", "m3u", "m3u8", "m4a", "m4b", "m4r", 
-	"m4v", "mkv", "mov", "mp3", "mp4", "oga", "dv",
-	"ogg", "ogv", "ogx", "ts", "webm", "wma", "wmv"
-	];
+	it('ensures that the spy was called to the function file.list', function() {
+		spyOn(file, 'list');
 
-	function getSufix (fileName){
-		return /[^.]+$/.exec(fileName);
-	}
+		file.list(request, response);
+		expect(file.list.calls.length).toEqual(1);
+	});
 
-	for(var i=0; i<fileTypes.length; i++){
-		if(fileSufix == fileTypes[i]){
-			validFormat = true;
-			break;
-		}
-	}
-
-	
-	return validFormat;
-}
+	it('ensures that the spy was called to the function file.list', function() {
+		file.list(request, response);
+		// Execution
+		waitsFor(function() {
+			return ( typeof response.instanceVars.json != 'undefined');
+		}, "Video List", 1000);
+		
+		//Expectation
+		runs(function() {
+			console.log('response.instanceVars')
+			console.log(response.instanceVars.json)
+			/*expect(typeof(response.instanceVars.json.outputs)).toBe("object");
+			expect(typeof(response.instanceVars.json.outputs[0])).toBe("object");
+			expect(response.instanceVars.json.id).toMatch("47692110");*/
+		});
+	});
+});

@@ -27,7 +27,7 @@ exports.upload = function(req, res) {
 	});
 	
 	uploader.on('end', function() {
-		exports.convert(videoFile.name, "tmp/"+videoFile.name, videoFile.name, function(data){
+		convert(videoFile.name, "tmp/"+videoFile.name, videoFile.name, function(data){
 			console.log("done");
 			res.json(data);
 		});
@@ -37,7 +37,7 @@ exports.upload = function(req, res) {
 }
 
 
-exports.convert = function(fileName, inFilePath, videoName, callback){
+var convert = function(fileName, inFilePath, videoName, callback){
 
 	zClient.Job.create({
 		test: true,
@@ -93,9 +93,12 @@ exports.convert = function(fileName, inFilePath, videoName, callback){
 			callback(err);
 			return err;
 		}
-		console.log('Job created!\nJob ID: ' + data.id);
-		console.log(data);
-		list.add(data.outputs);
+		//console.log('Job created!\nJob ID: ' + data.id);
+		//console.log(data);
+		if(!process.env.NODE_TEST){
+			list.add(data.outputs);
+		}
+		
 		callback(data);
 	});
 }
@@ -137,7 +140,7 @@ var list = {
 			if (err) {
 				return console.log(err);
 			}
-			console.log(JSON.parse(data));
+			//console.log(JSON.parse(data));
 			callback(JSON.parse(data));
 		});
 	}
