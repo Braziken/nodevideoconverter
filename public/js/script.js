@@ -96,9 +96,14 @@ $(document).ready(function(){
 			}
 			var videoSources = [];
 			var videoObj = {};
-			for(var i=0; i<data.outputs.length; i++){
-				videoObj[data.outputs[i].label] = data.outputs[i].url;
-				videoSources.push(videoObj);
+
+			if(data.hasOwnProperty(outputs)){
+				for(var i=0; i<data.outputs.length; i++){
+					videoObj[data.outputs[i].label] = data.outputs[i].url;
+					videoSources.push(videoObj);
+				}	
+			}else{
+				showMessage('Error on conversion: '+ data, 'error');	
 			}
 
 			console.log(['videoSources', videoSources]);
