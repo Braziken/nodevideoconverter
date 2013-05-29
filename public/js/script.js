@@ -97,7 +97,7 @@ $(document).ready(function(){
 			var videoSources = [];
 			var videoObj = {};
 
-			if(data.hasOwnProperty(outputs)){
+			if(data.hasOwnProperty('outputs')){
 				for(var i=0; i<data.outputs.length; i++){
 					videoObj[data.outputs[i].label] = data.outputs[i].url;
 					videoSources.push(videoObj);
@@ -115,7 +115,7 @@ $(document).ready(function(){
 			console.log('Conversion performed successfully', data)
 			showMessage('Conversion performed successfully', 'success');
 			var scope = angular.element('body').scope();
-			scope.getlist();
+			scope.getList();
 
 		}
 
