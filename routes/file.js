@@ -95,9 +95,7 @@ var convert = function(fileName, inFilePath, videoName, callback){
 		}
 		//console.log('Job created!\nJob ID: ' + data.id);
 		//console.log(data);
-		if(!process.env.NODE_TEST){
-			list.add(data.outputs);
-		}
+		list.add(data.outputs);
 		
 		callback(data);
 	});
