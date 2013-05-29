@@ -167,11 +167,9 @@ describe("Route List", function() {
 		
 		//Expectation
 		runs(function() {
-			console.log('response.instanceVars')
-			console.log(response.instanceVars.json)
-			/*expect(typeof(response.instanceVars.json.outputs)).toBe("object");
+			expect(typeof(response.instanceVars.json.outputs)).toBe("object");
 			expect(typeof(response.instanceVars.json.outputs[0])).toBe("object");
-			expect(response.instanceVars.json.id).toMatch("47692110");*/
+			expect(response.instanceVars.json.id).toMatch("47692110");
 		});
 	});
 });

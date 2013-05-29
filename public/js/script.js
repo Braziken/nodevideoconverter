@@ -17,6 +17,10 @@ $(document).ready(function(){
 		$('.videoWebm').attr('href', videoFiles[0].webm);
 		$('.videoMp4').attr('href', videoFiles[0].mp4);
 
+		if($("#videoplayer").data().flowplayer){
+			$("#videoplayer").data().flowplayer.unbind();	
+		}
+		
 		$("#videoplayer").flowplayer({
 			playlist: [videoFiles]
 		});
@@ -105,7 +109,8 @@ $(document).ready(function(){
 			
 			console.log('Conversion performed successfully', data)
 			showMessage('Conversion performed successfully', 'success');
-
+			var scope = angular.element('body').scope();
+			scope.getlist();
 
 		}
 
