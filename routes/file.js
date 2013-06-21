@@ -9,6 +9,7 @@ var s3Client = s3.createClient({
 	secret: config.s3.secret,
 	bucket: config.s3.bucket
 });
+
 var zClient = new zencoder(config.zencoder.token);
 
 
