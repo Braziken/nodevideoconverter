@@ -1,14 +1,15 @@
 var s3 = require('s3');
 var zencoder = require('zencoder');
-//console.log(s3)	
+
+//your application data to conect on S3 and Zencoder services
+var config = require('./config');
 
 var s3Client = s3.createClient({
-	key: "AKIAJLG4KCLXEPDOQKSA",
-	secret: "UGWOiYMnCFzbpC/L1ZYOOMp6hY0XRaoj+hoi9a1c",
-	bucket: "nodevideoconverter"
+	key: config.s3.key,
+	secret: config.s3.secret,
+	bucket: config.s3.bucket
 });
-//console.log(s3Client)
-var zClient = new zencoder('42ee9e2c3e9bd574df5bd48483405eb0');
+var zClient = new zencoder(config.zencoder.token);
 
 
 
